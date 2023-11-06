@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 21:18:20 by seohyeki          #+#    #+#             */
-/*   Updated: 2023/11/06 00:29:58 by seohyeki         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:06:09 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	count_size(long long n)
 		count++;
 		n /= 10;
 	}
-	return (count + 1);
+	return (count);
 }
 
 char	*ft_itoa(int n)
@@ -38,11 +38,10 @@ char	*ft_itoa(int n)
 
 	num = (long long)n;
 	size = count_size(num);
-	num_str = (char *)malloc(sizeof(char) * size);
+	num_str = (char *)malloc(sizeof(char) * (size + 1));
 	if (num_str == 0)
 		return (NULL);
-	num_str[size - 1] = '\0';
-	size -= 1;
+	num_str[size] = '\0';
 	if (num < 0)
 	{
 		num_str[0] = '-';
