@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 11:07:25 by seohyeki          #+#    #+#             */
-/*   Updated: 2023/11/11 17:32:35 by seohyeki         ###   ########.fr       */
+/*   Updated: 2023/11/11 17:53:32 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	ft_printf(const char *format, ...)
 
 	total_len = 0;
 	va_start(ap, format);
-	while (*format && total_len >= 0)
+	while (*format && total_len != -1)
 	{
 		if (*format == '%')
 		{
@@ -70,7 +70,7 @@ int	ft_printf(const char *format, ...)
 		}
 		else
 		{
-			if (write(1, &format[0], 1) == -1)
+			if (write(1, &format[0], 1) < 0)
 				total_len = -1;
 			else
 				total_len++;
