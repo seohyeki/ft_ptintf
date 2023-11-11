@@ -6,61 +6,76 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 11:07:25 by seohyeki          #+#    #+#             */
-/*   Updated: 2023/11/06 00:06:16 by seohyeki         ###   ########.fr       */
+/*   Updated: 2023/11/11 17:32:35 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	chk_conv(va_list *ap, char c)
+int	is_specifier(char c)
+{
+	char	*specifier;
+	int		i;
+
+	specifier = "csdiupxX%";
+	i = 0;
+	while (specifier[i])
+	{
+		if (c == specifier[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	chk_specifier(va_list *ap, char c, int *total_len)
 {
 	int	len;
 
 	if (c == 'c')
-		len = conv_c(va_arg(*ap, int));
+		len = print_char(va_arg(*ap, int));
 	else if (c == 's')
-		len = conv_s(va_arg(*ap, char *));
+		len = print_str(va_arg(*ap, char *));
 	else if (c == 'd' || c == 'i')
-		len = conv_dni(va_arg(*ap, int));
+		len = print_demical(va_arg(*ap, int));
 	else if (c == 'u')
-		len = conv_u(va_arg(*ap, unsigned int));
+		len = print_unsigned_demical(va_arg(*ap, unsigned int));
 	else if (c == 'p')
-		len = conv_p(va_arg(*ap, unsigned long long));
+		len = print_ptr(va_arg(*ap, unsigned long long));
 	else if (c == 'x' || c == 'X')
-		len = conv_x(va_arg(*ap, unsigned int), c);
-	else if (c == '%')
-	{
-		write(1, "%", 1);
-		len = 1;
-	}
+		len = print_hex(va_arg(*ap, unsigned int), c);
 	else
-		len = -1;
-	return (len);
+		len = write(1, "%", 1);
+	if (len < 0)
+		*total_len = -1;
+	else
+		*total_len += len;
 }
 
 int	ft_printf(const char *format, ...)
 {
 	va_list	ap;
-	int		i;
-	int		len;
 	int		total_len;
 
-	i = 0;
 	total_len = 0;
 	va_start(ap, format);
-	while (format[i] != 0)
+	while (*format && total_len >= 0)
 	{
-		if (format[i] == '%' && format[i + 1])
+		if (*format == '%')
 		{
-			len = chk_conv(&ap, format[i + 1]);
-			if (len == -1)
-				return (total_len);
-			total_len += len;
-			i++;
+			format++;
+			if (is_specifier(*format) == 0)
+				break ;
+			chk_specifier(&ap,*format, &total_len);
 		}
 		else
-			total_len += write(1, &format[i], 1);
-		i++;
+		{
+			if (write(1, &format[0], 1) == -1)
+				total_len = -1;
+			else
+				total_len++;
+		}
+		format++;
 	}
 	va_end(ap);
 	return (total_len);

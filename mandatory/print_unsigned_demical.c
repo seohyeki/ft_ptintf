@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   print_unsigned_demical.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/05 21:18:20 by seohyeki          #+#    #+#             */
-/*   Updated: 2023/11/06 10:06:09 by seohyeki         ###   ########.fr       */
+/*   Created: 2023/11/11 15:24:51 by seohyeki          #+#    #+#             */
+/*   Updated: 2023/11/11 16:04:35 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	count_size(long long n)
+int	count_ui_size(unsigned int n)
 {
 	int	count;
 
 	count = 0;
-	if (n <= 0)
-	{
-		n *= -1;
-		count += 1;
-	}
+	if (n == 0)
+		count++;
 	while (n != 0)
 	{
 		count++;
@@ -30,29 +27,34 @@ int	count_size(long long n)
 	return (count);
 }
 
-char	*ft_itoa(int n)
+char	*ft_uitoa(unsigned int num)
 {
-	long long	num;
 	int			size;
 	char		*num_str;
 
-	num = (long long)n;
-	size = count_size(num);
+	size = count_ui_size(num);
 	num_str = (char *)malloc(sizeof(char) * (size + 1));
 	if (num_str == 0)
 		return (NULL);
 	num_str[size] = '\0';
-	if (num < 0)
-	{
-		num_str[0] = '-';
-		num *= -1;
-	}
 	while (--size)
 	{
 		num_str[size] = num % 10 + '0';
 		num /= 10;
 	}
-	if (n >= 0)
-		num_str[size] = num + '0';
+	num_str[size] = num + '0';
 	return (num_str);
+}
+
+int	print_unsigned_demical(unsigned int num)
+{
+	ssize_t	len;
+	char	*str;
+
+	str = ft_uitoa(num);
+	if (str == NULL)
+		return (-1);
+	len = write(1, str, ft_strlen(str));
+	free(str);
+	return (len);
 }
